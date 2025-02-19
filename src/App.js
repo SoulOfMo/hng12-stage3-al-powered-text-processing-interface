@@ -1,9 +1,13 @@
 /* eslint-disable no-restricted-globals */
+// eslint-disable-next-line no-unused-vars
 import { useState, useEffect } from "react";
 
 function App() {
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [sourceLang, setSourceLang] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [targetLang, setTargetLang] = useState("");
   const [text, setText] = useState("");
   const [outputTexts, setOutputTexts] = useState([]);
@@ -288,6 +292,7 @@ function Input({ handleSubmit, handleChange, text }) {
 }
 
 function Output({ result, detectedLang, translateText, handleSummerizer }) {
+  // eslint-disable-next-line no-unused-vars
   const [selectedLang, setSelectedLang] = useState("en");
   const [translatedText, setTranslatedText] = useState("");
   const [summarizedText, setSummarizedText] = useState("");
