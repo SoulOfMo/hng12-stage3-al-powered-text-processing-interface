@@ -1,0 +1,12 @@
+main {
+  background-color: var(--bg-color);
+  font-family: var(--font1);
+  color: var(--netural2);
+  min-height: 100vh;
+  padding: 2rem;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
+}

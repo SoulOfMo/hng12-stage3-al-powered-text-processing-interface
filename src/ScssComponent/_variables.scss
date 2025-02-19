@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+:root {
+  --font1: "IBM Plex Mono", serif;
+  --font2: "Plus Jakarta Sans", serif;
+  --bg-color: #1e1e2e;
+  --netural1: #a658e6;
+  --overlay: #a658e630;
+  --netural2: #f8f9fa;
+  --netural3: #7a34c1;
+}
+
+.bg-light {
+  /* --bg-color: #0A2E36; */
+  --bg-color: #f8f9fa;
+  --netural1: #4a90e2;
+  --overlay: #4a90e240;
+  --netural2: #2d2d2d;
+  --netural3: #3b7ac9;
+}

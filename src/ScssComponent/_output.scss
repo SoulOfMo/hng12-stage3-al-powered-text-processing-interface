@@ -1,0 +1,43 @@
+.outputs {
+  font-size: 1.2rem;
+  display: flex;
+  border: 1px solid var(--netural2);
+  border-radius: 0.4rem;
+  padding: 0.8rem;
+  justify-content: space-between;
+  &:not(:first-of-type) {
+    margin-top: 1rem;
+  }
+
+  .results {
+    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .translated-container {
+      align-self: flex-end;
+      display: flex;
+      width: 60rem;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .lang-type {
+      background-color: var(--overlay);
+      padding: 0.4rem;
+      border: none;
+      // border-radius: 20px;
+      font-size: 1rem;
+      width: fit-content;
+    }
+
+    select {
+      outline: none;
+      background-color: var(--overlay);
+      color: var(--netural2);
+      &:focus {
+        outline: none;
+        background-color: var(--overlay);
+      }
+    }
+  }
+}

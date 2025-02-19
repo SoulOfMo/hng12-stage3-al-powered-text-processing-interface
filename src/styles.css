@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+:root {
+  --font1: "IBM Plex Mono", serif;
+  --font2: "Plus Jakarta Sans", serif;
+  --bg-color: #1e1e2e;
+  --netural1: #a658e6;
+  --overlay: #a658e630;
+  --netural2: #f8f9fa;
+  --netural3: #7a34c1;
+}
+
+.bg-light {
+  /* --bg-color: #0A2E36; */
+  --bg-color: #f8f9fa;
+  --netural1: #4a90e2;
+  --overlay: #4a90e240;
+  --netural2: #2d2d2d;
+  --netural3: #3b7ac9;
+}
+
+/* reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  text-rendering: optimizeSpeed;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  font-size: 62.5%;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+.no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+main {
+  background-color: var(--bg-color);
+  font-family: var(--font1);
+  color: var(--netural2);
+  min-height: 100vh;
+  padding: 2rem;
+}
+main header {
+  display: flex;
+  justify-content: space-between;
+}
+
+header h1 {
+  font-size: 2.4rem;
+}
+
+.interface {
+  width: 100%;
+  border: 1px solid var(--netural2);
+  border-top: none;
+  height: 60vh;
+  margin-top: 1.2rem;
+  padding: 0.8rem;
+  overflow-y: scroll;
+}
+
+.outputs {
+  font-size: 1.2rem;
+  display: flex;
+  border: 1px solid var(--netural2);
+  border-radius: 0.4rem;
+  padding: 0.8rem;
+  justify-content: space-between;
+}
+.outputs:not(:first-of-type) {
+  margin-top: 1rem;
+}
+.outputs .results {
+  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.outputs .results .translated-container {
+  align-self: flex-end;
+  display: flex;
+  width: 60rem;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.outputs .results .lang-type {
+  background-color: var(--overlay);
+  padding: 0.4rem;
+  border: none;
+  font-size: 1rem;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.outputs .results select {
+  outline: none;
+  background-color: var(--overlay);
+  color: var(--netural2);
+}
+.outputs .results select:focus {
+  outline: none;
+  background-color: var(--overlay);
+}
+
+.input-container {
+  font-size: 1.6rem;
+}
+.input-container textarea {
+  width: 100%;
+  height: 10rem;
+}/*# sourceMappingURL=styles.css.map */
