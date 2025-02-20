@@ -1,16 +1,18 @@
 /* eslint-disable no-restricted-globals */
 
-export async function initializeLanguageDetector() {
+export async function initializeLanguageDetector(setErrorMsg) {
   try {
     const languageDetectorCapabilities =
       await self.ai.languageDetector.capabilities();
     const canDetect = languageDetectorCapabilities.capabilities;
     let detector;
-    let errorlog;
+
     if (canDetect === "no") {
       console.log("Language detector is not available.");
-      errorlog = "Language detector is not available.";
-      return errorlog;
+      setErrorMsg((prev) => ({
+        ...prev,
+        languageDetector: "Language detector is not available on this device",
+      }));
     }
 
     if (canDetect === "readily") {
@@ -28,13 +30,16 @@ export async function initializeLanguageDetector() {
     return detector;
   } catch (error) {
     console.error("Error initializing language detector:", error);
-    // setErrorLog("Error initializing language detector");
+    setErrorMsg((prev) => ({
+      ...prev,
+      languageDetector: "Failed to initialize language detector.",
+    }));
     return null;
   }
 }
 
-export default async function detectLanguage(text) {
-  const detector = await initializeLanguageDetector();
+export default async function detectLanguage(text, setErrorMsg) {
+  const detector = await initializeLanguageDetector(setErrorMsg);
   if (!detector) return;
 
   try {
@@ -44,6 +49,10 @@ export default async function detectLanguage(text) {
     return detectedLanguage;
   } catch (error) {
     console.error("Error detecting language:", error);
+    setErrorMsg((prev) => ({
+      ...prev,
+      languageDetector: "Failed to detect language.",
+    }));
     return "unknown";
   }
 }

@@ -12,7 +12,6 @@ export default async function translateText(text, sourceLang, targetLang) {
     let translator;
 
     if (!isAvailable) {
-      // setErrorLog("Translation for this language pair is not available.");
       console.log("Translation for this language pair is not available.");
       return;
     }

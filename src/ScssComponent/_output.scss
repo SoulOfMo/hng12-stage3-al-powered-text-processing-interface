@@ -33,25 +33,33 @@
       font-size: 1rem;
       width: fit-content;
     }
-
-    select {
-      outline: none;
-      background-color: var(--overlay);
-      color: var(--netural2);
-      &:focus {
+    .select-container {
+      display: flex;
+      flex-direction: column;
+      select {
         outline: none;
         background-color: var(--overlay);
+        max-width: 11rem;
+        align-self: flex-end;
+        color: var(--netural2);
+        &:focus {
+          outline: none;
+          background-color: var(--overlay);
+        }
       }
     }
   }
 
   .summarized-container {
+    display: flex;
+    flex-direction: column;
     button {
       border: none;
       font-size: 1.2rem;
       padding: 0.4rem 0.8rem;
       background-color: var(--netural3);
       color: var(--netural2);
+      width: fit-content;
       &:is(:focus, :active) {
         outline: none;
       }

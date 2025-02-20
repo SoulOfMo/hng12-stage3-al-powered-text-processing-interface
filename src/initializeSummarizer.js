@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 export async function initializeSummarizer() {
   const options = {
-    // sharedContext: "This is a scientific article",
+    sharedContext: "random article",
     type: "tl;dr",
     format: "plain-text",
     length: "short",

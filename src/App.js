@@ -1,15 +1,20 @@
 /* eslint-disable no-restricted-globals */
 // eslint-disable-next-line no-unused-vars
 import { useState, useEffect } from "react";
+//APIs
 import detectLanguage from "./initializeLanguageDetector";
 import translateText from "./translateText";
-import Input from "./JsComponent/Input";
 import SummarizerText from "./initializeSummarizer";
+
+///Components
+import Input from "./JsComponent/Input";
 import Interface from "./Interface";
 
 function App() {
-  const [errorMsg, setErrorMsg] = useState("");
-  // const [errorLog, setErrorLog] = useState("");
+  const [errorMsg, setErrorMsg] = useState({
+    input: "", // For input validation errors
+    languageDetector: "", // For language detection errors
+  });
   const [text, setText] = useState("");
   const [outputTexts, setOutputTexts] = useState([]);
   const [theme, setTheme] = useState("dark");
@@ -65,11 +70,17 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (text.trim() === "") {
-      setErrorMsg("baba write something down");
+      setErrorMsg((prev) => ({
+        ...prev,
+        input: "baba write something down",
+      }));
       return;
     } else {
-      setErrorMsg("");
-      const detectedLang = await detectLanguage(text);
+      setErrorMsg((prev) => ({
+        ...prev,
+        input: "",
+      }));
+      const detectedLang = await detectLanguage(text, setErrorMsg);
       setOutputTexts([...outputTexts, { text, detectedLang }]);
       setText("");
     }
@@ -85,6 +96,8 @@ function App() {
         outputTexts={outputTexts}
         translateText={translateText}
         handleSummerizer={SummarizerText}
+        errorMsg={errorMsg}
+        setErrorMsg={setErrorMsg}
       />
       <Input
         errorMsg={errorMsg}

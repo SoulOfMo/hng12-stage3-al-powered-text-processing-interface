@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 export default function Output({
+  errorMsg,
   result,
   detectedLang,
   translateText,
@@ -11,11 +12,16 @@ export default function Output({
   const [summarizedText, setSummarizedText] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [sourceLang] = useState(detectedLang);
+  const [translatorError, setTranslatorError] = useState("");
+  const [summarizerError, setSummarizerError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [translatorLoading, setTranslatorLoading] = useState(false);
 
   const getLanguageName = (code) =>
     new Intl.DisplayNames(["en"], { type: "language" }).of(code);
 
   async function handleLangChange(e) {
+    setTranslatorLoading(true);
     const newLang = e.target.value;
     setSelectedLang(newLang);
     console.log(
@@ -26,20 +32,44 @@ export default function Output({
       "To:",
       newLang
     );
+    if (sourceLang === newLang) {
+      setTranslatorError("Same Language selected");
+      setIsTranslating(false);
+      setTranslatorLoading(false);
+      return;
+    }
 
-    const translated = await translateText(result.text, sourceLang, newLang);
-    setTranslatedText(translated);
-    setIsTranslating(true);
+    setTranslatorError("");
+
+    try {
+      const translated = await translateText(result.text, sourceLang, newLang);
+      setTranslatedText(translated);
+      setIsTranslating(true);
+    } catch (error) {
+      console.error("Translation error:", error);
+      setTranslatorError("Failed to translate text.");
+    } finally {
+      setTranslatorLoading(false);
+    }
   }
 
   async function handleSummarize() {
-    const summarized = await handleSummerizer(result.text);
-    console.log(summarized);
-    if (!summarized) {
-      console.error("Summarizer API is not available.");
-      return;
+    // Reset summarizer error before starting
+    setSummarizerError("");
+    setLoading(true);
+
+    try {
+      const summarized = await handleSummerizer(result.text);
+      if (!summarized) {
+        throw new Error("Summarizer API is not available.");
+      }
+      setSummarizedText(summarized);
+    } catch (error) {
+      console.error("Summarization error:", error);
+      setSummarizerError(error.message || "Failed to summarize the text.");
+    } finally {
+      setLoading(false);
     }
-    setSummarizedText(summarized);
   }
 
   return (
@@ -47,17 +77,37 @@ export default function Output({
       <div className="results">
         <div className="output-container">
           <p className="output-text">{result.text}</p>
-          <p className="lang-type">
-            detected language: {getLanguageName(sourceLang)}
+          <p
+            className={
+              errorMsg.languageDetector === ""
+                ? "lang-type"
+                : "error-msg lang-type"
+            }
+          >
+            detected language:
+            {errorMsg.languageDetector === ""
+              ? getLanguageName(sourceLang)
+              : errorMsg.languageDetector}
           </p>
         </div>
         <div className="translated-container">
           {isTranslating && (
-            <span> Translated to {getLanguageName(selectedLang)}</span>
+            <span>
+              {translatorLoading ? "Translating to " : "Translated to "}
+              {getLanguageName(selectedLang)}
+            </span>
           )}
-          <p className="translate-text">{translatedText}</p>
-          <div className="action-btn">
-            <select onChange={handleLangChange}>
+          <p className="translate-text">
+            {translatorLoading
+              ? "Processing..."
+              : isTranslating && translatedText}
+          </p>
+          <div className="select-container">
+            <select
+              onChange={handleLangChange}
+              aria-label="Select target language for translation"
+              disabled={translatorLoading}
+            >
               <option value="" hidden>
                 Translate
               </option>
@@ -68,15 +118,26 @@ export default function Output({
               <option value="tr">Turkish</option>
               <option value="fr">French</option>
             </select>
+            <span className="error-msg">{translatorError}</span>
           </div>
         </div>
         <div className="summarized-container">
           <p className="summarize-text">{summarizedText}</p>
           {result.text.length > 150 && (
-            <button onClick={handleSummarize}>Summarize</button>
+            <button disabled={loading} onClick={handleSummarize}>
+              {loading ? "Processing..." : "Summarize"}
+            </button>
           )}
+          <span className="error-msg">{summarizerError}</span>
         </div>
       </div>
     </div>
   );
 }
+
+// const longText =
+//   "The UI should look like a chat interface with a textarea field in the bottom of the page and the output field should be the the area above";
+
+// const summary = await summarizer.summarize(longText, {
+//   context: "This article is intended for a tech-savvy audience.",
+// });

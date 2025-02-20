@@ -21,6 +21,7 @@
       background-color: var(--netural1);
       color: var(--netural2);
       padding: 0.8rem;
+      resize: none;
       outline: none;
       &::placeholder {
         color: var(--netural2);

@@ -140,14 +140,24 @@ header h1 {
   width: -moz-fit-content;
   width: fit-content;
 }
-.outputs-section .results select {
+.outputs-section .results .select-container {
+  display: flex;
+  flex-direction: column;
+}
+.outputs-section .results .select-container select {
   outline: none;
   background-color: var(--overlay);
+  max-width: 11rem;
+  align-self: flex-end;
   color: var(--netural2);
 }
-.outputs-section .results select:focus {
+.outputs-section .results .select-container select:focus {
   outline: none;
   background-color: var(--overlay);
+}
+.outputs-section .summarized-container {
+  display: flex;
+  flex-direction: column;
 }
 .outputs-section .summarized-container button {
   border: none;
@@ -155,6 +165,8 @@ header h1 {
   padding: 0.4rem 0.8rem;
   background-color: var(--netural3);
   color: var(--netural2);
+  width: -moz-fit-content;
+  width: fit-content;
 }
 .outputs-section .summarized-container button:is(:focus, :active) {
   outline: none;
@@ -186,6 +198,7 @@ header h1 {
   background-color: var(--netural1);
   color: var(--netural2);
   padding: 0.8rem;
+  resize: none;
   outline: none;
 }
 .input-section .input-container textarea::-moz-placeholder {
