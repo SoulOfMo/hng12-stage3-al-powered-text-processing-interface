@@ -1,193 +1,74 @@
 /* eslint-disable no-restricted-globals */
 // eslint-disable-next-line no-unused-vars
 import { useState, useEffect } from "react";
+import detectLanguage from "./initializeLanguageDetector";
+import translateText from "./translateText";
+import Input from "./JsComponent/Input";
+import SummarizerText from "./initializeSummarizer";
+import Interface from "./Interface";
 
 function App() {
-  // eslint-disable-next-line no-unused-vars
-  const [error, setError] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [sourceLang, setSourceLang] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [targetLang, setTargetLang] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  // const [errorLog, setErrorLog] = useState("");
   const [text, setText] = useState("");
   const [outputTexts, setOutputTexts] = useState([]);
-  const [lang, setLang] = useState("en");
-  const [darkTheme, setDarkTheme] = useState("dark");
+  const [theme, setTheme] = useState("dark");
 
-  async function initializeLanguageDetector() {
-    try {
-      const languageDetectorCapabilities =
-        await self.ai.languageDetector.capabilities();
-      const canDetect = languageDetectorCapabilities.capabilities;
-      let detector;
+  //   try {
+  //     const translatorCapabilities = await self.ai.translator.capabilities();
 
-      if (canDetect === "no") {
-        console.log("Language detector is not available.");
-        setError("Language detector is not available.");
-        return null;
-      }
+  //     const isAvailable = await translatorCapabilities.languagePairAvailable(
+  //       sourceLang,
+  //       targetLang
+  //     );
 
-      if (canDetect === "readily") {
-        detector = await self.ai.languageDetector.create();
-      } else {
-        detector = await self.ai.languageDetector.create({
-          monitor(m) {
-            m.addEventListener("downloadprogress", (e) => {
-              console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-            });
-          },
-        });
-        await detector.ready;
-      }
-      return detector;
-    } catch (error) {
-      console.error("Error initializing language detector:", error);
-      setError("Error initializing language detector");
-      return null;
-    }
-  }
+  //     let translator;
 
-  async function detectLanguage(text) {
-    const detector = await initializeLanguageDetector();
-    if (!detector) return;
+  //     if (!isAvailable) {
+  //       // setErrorLog("Translation for this language pair is not available.");
+  //       console.log("Translation for this language pair is not available.");
+  //       return;
+  //     }
 
-    try {
-      const result = (await detector.detect(text))[0];
-      const detectedLanguage = result.detectedLanguage;
+  //     if (translatorCapabilities.capabilities === "readily") {
+  //       translator = await self.ai.translator.create({
+  //         sourceLanguage: sourceLang,
+  //         targetLanguage: targetLang,
+  //       });
+  //     } else {
+  //       translator = await self.ai.translator.create({
+  //         sourceLanguage: sourceLang,
+  //         targetLanguage: targetLang,
+  //         monitor(m) {
+  //           m.addEventListener("downloadprogress", (e) => {
+  //             console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
+  //           });
+  //         },
+  //       });
+  //       await translator.ready;
+  //     }
 
-      return detectedLanguage;
-    } catch (error) {
-      console.error("Error detecting language:", error);
-      return "unknown";
-    }
-  }
-
-  async function translateText(text, sourceLang, targetLang) {
-    try {
-      const translatorCapabilities = await self.ai.translator.capabilities();
-      const isAvailable = translatorCapabilities.languagePairAvailable(
-        sourceLang,
-        targetLang
-      );
-      let translator;
-
-      if (!isAvailable) {
-        setError("Translation for this language pair is not available.");
-        console.log("Translation for this language pair is not available.");
-        return;
-      }
-
-      if (translatorCapabilities.capabilities === "readily") {
-        translator = await self.ai.translator.create({
-          sourceLanguage: sourceLang,
-          targetLanguage: targetLang,
-        });
-      } else {
-        translator = await self.ai.translator.create({
-          sourceLanguage: sourceLang,
-          targetLanguage: targetLang,
-          monitor(m) {
-            m.addEventListener("downloadprogress", (e) => {
-              console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-            });
-          },
-        });
-        await translator.ready;
-      }
-
-      const translatedText = await translator.translate(text);
-      console.log(`Translated Text: ${translatedText}`);
-      return translatedText;
-    } catch (error) {
-      console.error("Error translating text:", error);
-    }
-  }
+  //     const translatedText = await translator.translate(text);
+  //     console.log(`Translated Text: ${translatedText}`);
+  //     return translatedText;
+  //   } catch (error) {
+  //     console.error("Error translating text:", error);
+  //   }
+  // }
 
   ///summarization
-  async function initializeSummarizer() {
-    const options = {
-      // sharedContext: "This is a scientific article",
-      type: "tl;dr",
-      format: "plain-text",
-      length: "short",
-    };
-
-    const available = (await self.ai.summarizer.capabilities()).available;
-    let summarizer;
-    if (available === "no") {
-      console.log("The Summarizer API isn't usable. ");
-      // The Summarizer API isn't usable.
-      return;
-    }
-    if (available === "readily") {
-      // The Summarizer API can be used immediately .
-      summarizer = await self.ai.summarizer.create(options);
-    } else {
-      // The Summarizer API can be used after the model is downloaded.
-      summarizer = await self.ai.summarizer.create(options);
-      summarizer.addEventListener("downloadprogress", (e) => {
-        console.log(e.loaded, e.total);
-      });
-      await summarizer.ready;
-    }
-    console.log("Summarizer is ready!");
-    return summarizer;
-  }
-
-  async function SummarizerText(text) {
-    const summarizer = await initializeSummarizer();
-    if (!summarizer) {
-      console.log("Summarizer couldn't be initialized.");
-      return;
-    }
-
-    const summary = await summarizer.summarize(text, {
-      context: "This article is intended for a tech-savvy audience.",
-    });
-
-    console.log("Summary:", summary);
-    return summary;
-  }
-
-  // Example usage
-  // detectLanguage("Hallo und herzlich willkommen!");
-  // translateText("Where is the next bus stop, please?", "en", "fr");
-  // detectLanguage(`Où est le prochain arrêt de bus, s'il vous plaît ?`);
-  // detectLanguage(`Cómo estás`);
-
-  // translateText("How are you", "en", "fr");
-  // translateText("How are you?", "en", "ja");
-  // translateText("How are you?", "en", "pt");
-
-  // translateText("How are you?", "en", "ru");
-  // translateText("How are you?", "en", "es");
-  // translateText("How are you?", "en", "tr");
-  // translateText("How are you?", "en", "hi");
-  // translateText("How are you?", "en", "vi");
-  // translateText("How are you?", "en", "bn");
-
-  // const [formData, setFormData] = useState({
-  //   text: "",
-  //   translateText: "",
-  // });
 
   function handleChange(e) {
     setText(e.target.value);
   }
 
-  function handleLang(e) {
-    e.preventDefault();
-    setLang(e.target.value);
-    console.log(text, sourceLang, e.target.value);
-    translateText(text, sourceLang, e.target.value);
-    // translateText("How are you", "en", "fr");
-  }
-  // 1. it is not coverting to other lang
-  // debug in the console
-  // 2. when i click on the select button, it should set the text to the text of the particular output container and and the value of the select should not chnage for the other output componenet instance, the translate text should be for select output component
   async function handleSubmit(e) {
     e.preventDefault();
-    if (text.trim()) {
+    if (text.trim() === "") {
+      setErrorMsg("baba write something down");
+      return;
+    } else {
+      setErrorMsg("");
       const detectedLang = await detectLanguage(text);
       setOutputTexts([...outputTexts, { text, detectedLang }]);
       setText("");
@@ -195,20 +76,18 @@ function App() {
   }
 
   function handleTheme() {
-    setDarkTheme((curTheme) => (curTheme === "dark" ? "" : "dark"));
+    setTheme((curTheme) => (curTheme === "dark" ? "" : "dark"));
   }
   return (
-    <main className={darkTheme === "dark" ? "bg-dark" : "bg-light"}>
-      <Header handleTheme={handleTheme} themeState={darkTheme} />
+    <main className={theme === "dark" ? "bg-dark" : "bg-light"}>
+      <Header handleTheme={handleTheme} themeState={theme} />
       <Interface
         outputTexts={outputTexts}
-        handleLang={handleLang}
-        lang={lang}
-        sourceLang={sourceLang}
         translateText={translateText}
         handleSummerizer={SummarizerText}
       />
       <Input
+        errorMsg={errorMsg}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         text={text}
@@ -244,114 +123,4 @@ function Header({ themeState, handleTheme }) {
   );
 }
 
-function Interface({
-  outputTexts,
-  handleLang,
-  lang,
-  translatedText,
-  sourceLang,
-  translateText,
-  handleSummerizer,
-}) {
-  return (
-    <div className="interface">
-      {outputTexts.map((result, id) => (
-        <Output
-          result={result}
-          handleLang={handleLang}
-          translatedText={translatedText}
-          lang={lang}
-          key={id}
-          sourceLang={sourceLang}
-          translateText={translateText}
-          detectedLang={result.detectedLang}
-          handleSummerizer={handleSummerizer}
-        />
-      ))}
-    </div>
-  );
-}
-
-function Input({ handleSubmit, handleChange, text }) {
-  return (
-    <form className="input-container">
-      <label htmlFor="request">Special request?</label>
-      <textarea
-        id="request"
-        name="request"
-        placeholder="Textarea"
-        value={text}
-        onChange={handleChange}
-        // maxLength={100}
-      ></textarea>
-      <button type="submit" onClick={handleSubmit} aria-label="submit-btn">
-        Submit
-      </button>
-    </form>
-  );
-}
-
-function Output({ result, detectedLang, translateText, handleSummerizer }) {
-  // eslint-disable-next-line no-unused-vars
-  const [selectedLang, setSelectedLang] = useState("en");
-  const [translatedText, setTranslatedText] = useState("");
-  const [summarizedText, setSummarizedText] = useState("");
-  const [sourceLang] = useState(detectedLang);
-
-  const getLanguageName = (code) =>
-    new Intl.DisplayNames(["en"], { type: "language" }).of(code);
-
-  async function handleLangChange(e) {
-    const newLang = e.target.value;
-    setSelectedLang(newLang);
-    console.log("Translating:", result, "From:", sourceLang, "To:", newLang);
-    console.log(result.text.length);
-    const translated = await translateText(result.text, sourceLang, newLang);
-    setTranslatedText(translated);
-  }
-
-  async function handleSummarize() {
-    const summarized = await handleSummerizer(result.text);
-    console.log(summarized);
-    setSummarizedText(summarized);
-  }
-
-  return (
-    <div className="outputs">
-      <div className="results">
-        <div className="input-container">
-          <p className="input-text">{result.text}</p>
-          <p className="lang-type">
-            detected text: {getLanguageName(sourceLang)}
-          </p>
-        </div>
-        <div className="translated-container">
-          <p className="translate-text">{translatedText}</p>
-          <div className="action-btn">
-            <select onChange={handleLangChange}>
-              <option value="" hidden>
-                Translate
-              </option>
-              <option value="en">English</option>
-              <option value="pt">Portuguese</option>
-              <option value="es">Spanish</option>
-              <option value="ru">Russian</option>
-              <option value="tr">Turkish</option>
-              <option value="fr">French</option>
-            </select>
-          </div>
-        </div>
-        <div className="summarized-container">
-          <p className="summarize-text">{summarizedText}</p>
-          {result.text.length > 150 && (
-            <button onClick={handleSummarize}>Summarize</button>
-          )}
-        </div>
-
-        {/* {false && <p className="Summarize-text"></p>
-      <p className="translate-text">{translatedText}</p>} */}
-      </div>
-    </div>
-  );
-}
 export default App;

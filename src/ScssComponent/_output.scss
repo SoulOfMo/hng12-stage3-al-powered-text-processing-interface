@@ -1,5 +1,5 @@
-.outputs {
-  font-size: 1.2rem;
+.outputs-section {
+  font-size: 1.6rem;
   display: flex;
   border: 1px solid var(--netural2);
   border-radius: 0.4rem;
@@ -20,6 +20,10 @@
       width: 60rem;
       flex-direction: column;
       align-items: flex-end;
+
+      span {
+        font-size: 1.2rem;
+      }
     }
     .lang-type {
       background-color: var(--overlay);
@@ -37,6 +41,19 @@
       &:focus {
         outline: none;
         background-color: var(--overlay);
+      }
+    }
+  }
+
+  .summarized-container {
+    button {
+      border: none;
+      font-size: 1.2rem;
+      padding: 0.4rem 0.8rem;
+      background-color: var(--netural3);
+      color: var(--netural2);
+      &:is(:focus, :active) {
+        outline: none;
       }
     }
   }
